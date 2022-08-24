@@ -1,0 +1,15 @@
+{
+    "shader": "phong_diff_spec",
+
+    "samplers": {
+        "texture_diff": "container",
+        "texture_spec": "container_spec"
+    },
+
+    "parameters": {
+        "lol": {
+            "type": "vec3f",
+            "value": [1.0, 1.0, 1.0]
+        }
+    }
+}
