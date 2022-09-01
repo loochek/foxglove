@@ -9,7 +9,7 @@ namespace foxglove::renderer {
     class Texture : public utils::NonCopyable {
     public:
         Texture(const math::Vec2i& size);
-        ~Texture();
+        ~Texture() = default;
 
         void SetData(const void* data, int size);
         void CommitToGPU(bool generate_mipmap = true);

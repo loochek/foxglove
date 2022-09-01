@@ -25,7 +25,6 @@ namespace foxglove::renderer {
         }
 
     private:
-
         void SetVertexAttributeMapping(const VertexAttributeMapping& mapping);
 
     private:

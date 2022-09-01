@@ -9,23 +9,26 @@ namespace foxglove::renderer {
         friend class Renderer;
 
     public:
-        Material(Shader* shader);
+        Material(const Shader* shader);
 
-        void AppendTexture(std::string name, Texture* texture);
+        void AppendTexture(std::string name, const Texture* texture);
 
-    private:
-        void Bind();
-        void Unbind();
+        void Bind() const;
+        void Unbind() const;
+
+        const Shader* GetShader() const {
+            return shader_;
+        }
 
     private:
         struct TextureSampler {
             std::string name;
-            Texture* texture;
+            const Texture* texture;
 
-            TextureSampler(std::string name, Texture* texture) : name(std::move(name)), texture(texture) {}
+            TextureSampler(std::string name, const Texture* texture) : name(std::move(name)), texture(texture) {}
         };
 
-        Shader* shader_;
+        const Shader* shader_;
 
         std::vector<TextureSampler> samplers_;
     };

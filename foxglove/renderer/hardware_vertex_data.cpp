@@ -24,7 +24,6 @@ namespace foxglove::renderer {
     }
 
     void HardwareVertexData::SetVertexAttributeMapping(const VertexAttributeMapping& mapping) {
-        Bind();
         for (int i = 0; i < mapping.GetAttributeCount(); i++) {
             VertexAttributeType type = mapping.GetAttributeType(i);
             size_t offset = mapping.GetAttributeOffset(i);
@@ -34,6 +33,5 @@ namespace foxglove::renderer {
                                             GL_FALSE, stride, (void*)offset));
             GL_ASSERT(glEnableVertexAttribArray(i));
         }
-        Unbind();
     }
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <asset/asset.hpp>
-#include <asset/handler_base.hpp>
+#include <asset/handlers/handler_base.hpp>
 
 namespace foxglove::renderer {
     class Shader;
@@ -12,28 +12,26 @@ namespace foxglove::renderer {
 namespace foxglove::asset {
     struct MaterialAsset : AssetBase {
         std::unique_ptr<renderer::Material> material;
-        std::string material_json;
 
         // dependencies
         AssetPtr<renderer::Shader> shader_dep;
         std::vector<AssetPtr<renderer::Texture>> texture_deps;
+
+        // temporary cross-state data
+        std::vector<std::string> samplers;
+
+        MaterialAsset() = delete;
+        MaterialAsset(std::string name) : AssetBase(std::move(name)) {}
     };
 
-    class ShaderAssetHandler : public AssetHandlerBase<MaterialAsset> {
-        friend const renderer::Shader* AssetPtr<renderer::Shader>::Access();
+    class MaterialAssetHandler : public AssetHandlerBase<MaterialAsset> {
+        friend const renderer::Material* AssetPtr<renderer::Material>::Access();
 
     public:
-        ShaderAssetHandler() = default;
+        MaterialAssetHandler(AssetManager& mgr);
 
     private:
-        virtual void Load(const std::string& name) override;
-        virtual void Initialize(const std::string& name) override;
-
-        static std::string ReadFile(const std::string& path);
+        void Load(MaterialAsset& asset) override;
+        void Initialize(MaterialAsset& asset) override;
     };
-
-    template<>
-    inline const renderer::Material* AssetPtr<renderer::Material>::Access() {
-        return const_cast<const renderer::Material*>(static_cast<MaterialAsset*>(asset_)->material.get());
-    }
 }

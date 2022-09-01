@@ -28,17 +28,16 @@ namespace foxglove::renderer {
         has_tex_coords_ = true;
     }
 
-
     void Mesh::SetMaterial(const Material *material) {
         material_ = material;
     }
 
 #define ATTR_COPY(array, type) \
     for (int i = 0; i < vertex_count; i++) { \
-        memcpy(&packed_data[curr_attr_offset + i * one_vertex_size], (array)[i].RawData(), sizeof(type)); \
+        memcpy(&packed_data[curr_attr_offset + i * one_vertex_count], (array)[i].RawData(), sizeof(type)); \
     }                   \
     \
-    curr_attr_offset += sizeof(type)
+    curr_attr_offset += sizeof(type) / sizeof(float);
 
     void Mesh::CommitToGPU() {
         int vertex_count = positions_.size();
@@ -55,10 +54,10 @@ namespace foxglove::renderer {
             mapping.AppendAttribute(VertexAttributeType::TexCoord);
         }
 
-        int one_vertex_size = mapping.GetOneVertexSize();
-        int vertex_buffer_size = one_vertex_size * vertex_count;
+        int one_vertex_count = mapping.GetOneVertexSize() / sizeof(float);
+        int vertex_buffer_count = one_vertex_count * vertex_count;
         std::unique_ptr<float[]> packed_data =
-                std::unique_ptr<float[]>(new float[vertex_buffer_size]);
+                std::unique_ptr<float[]>(new float[vertex_buffer_count]);
 
         int curr_attr_offset = 0;
 
@@ -75,6 +74,7 @@ namespace foxglove::renderer {
         // Create vertex and index buffer on GPU
         vert_data_ = std::make_unique<HardwareVertexData>();
 
+        int vertex_buffer_size = vertex_buffer_count * sizeof(float);
         vertex_buffer_ = std::make_unique<HardwareVertexBuffer>(vertex_buffer_size);
         vertex_buffer_->SetData(packed_data.get(), vertex_buffer_size);
         vert_data_->SetVertexBuffer(*vertex_buffer_, mapping);
@@ -85,5 +85,19 @@ namespace foxglove::renderer {
             index_buffer_->SetData(indices_.data(), index_buffer_size);
             vert_data_->SetIndexBuffer(*index_buffer_);
         }
+    }
+
+    void Mesh::Draw() {
+        material_->Bind();
+        vert_data_->Bind();
+
+        if (indexed_draw_) {
+            GL_ASSERT(glDrawElements(GL_TRIANGLES, indices_.size(), GL_UNSIGNED_INT, 0));
+        } else {
+            GL_ASSERT(glDrawArrays(GL_TRIANGLES, 0, positions_.size()));
+        }
+
+        vert_data_->Unbind();
+        material_->Unbind();
     }
 }

@@ -4,6 +4,7 @@
 #include <asset/asset_manager.hpp>
 #include <asset/handlers/texture_handler.hpp>
 #include <asset/handlers/shader_handler.hpp>
+#include <asset/handlers/material_handler.hpp>
 #include <renderer/renderer.hpp>
 #include <ecs/render_system.hpp>
 
@@ -19,6 +20,7 @@ namespace foxglove {
         assets_ = new asset::AssetManager();
         assets_->RegisterAssetHandler<renderer::Texture, asset::TextureAssetHandler>();
         assets_->RegisterAssetHandler<renderer::Shader, asset::ShaderAssetHandler>();
+        assets_->RegisterAssetHandler<renderer::Material, asset::MaterialAssetHandler>();
 
         window_ = new core::Window(math::Vec2i(800, 600), "Foxglove Application");
         renderer_ = new renderer::Renderer();

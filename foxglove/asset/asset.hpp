@@ -6,16 +6,30 @@
 
 namespace foxglove::asset {
     enum class AssetState {
+        /**
+         * Asset that not yet loaded and initialized (therefore can't be used).
+         * Makes possible to create references to the assets and load, then initialize all assets at once
+         * (displaying cute loading screen at the time)
+         */
         Void,
+
+        /// Asset which data has already loaded into RAM
         Uninitialized,
+
+        /// Fully prepared asset
         ReadyToUse
     };
 
-    struct AssetBase {
-        AssetBase() : state(AssetState::Void), ref_counter(0) {}
+    // Dummy type used by AssetPtr to represent a pointer to any asset
+    struct GenericAsset {};
 
+    struct AssetBase {
+        std::string name;
         AssetState state;
         int ref_counter;
+
+        AssetBase() = delete;
+        explicit AssetBase(std::string name) : name(std::move(name)), state(AssetState::Void), ref_counter(0) {}
     };
 
     template<typename AssetType>
@@ -25,7 +39,7 @@ namespace foxglove::asset {
     public:
         AssetPtr() : asset_(nullptr) {}
 
-        AssetPtr(AssetBase* asset) : asset_(asset) {
+        explicit AssetPtr(AssetBase* asset) : asset_(asset) {
             if (asset_ != nullptr) {
                 asset_->ref_counter++;
             }
@@ -64,12 +78,14 @@ namespace foxglove::asset {
         }
 
         const AssetType& operator*() {
-            FXG_ASSERT(asset_ != nullptr);
-            FXG_ASSERT(asset_->state == AssetState::ReadyToUse);
-            return *Access();
+            return *Get();
         }
 
         const AssetType* operator->() {
+            return Get();
+        }
+
+        const AssetType* Get() {
             FXG_ASSERT(asset_ != nullptr);
             FXG_ASSERT(asset_->state == AssetState::ReadyToUse);
             return Access();
@@ -79,17 +95,20 @@ namespace foxglove::asset {
         const AssetType* Access();
 
         /// Upcasting
-        template<typename AssetType_>
-        AssetPtr<AssetBase> Upcast() {
-            return AssetPtr<AssetBase>(asset_);
+        AssetPtr<GenericAsset> Upcast() {
+            return AssetPtr<GenericAsset>(asset_);
+        }
+
+        AssetBase* GetInternalAsset() const {
+            return asset_;
         }
 
     private:
         /// Downcasting. Used by AssetManager
         template<typename AssetType_>
         AssetPtr<AssetType_> Downcast() {
-            static_assert(std::is_same_v<AssetType, AssetBase>,
-                "Downcasting should be applied only for pointer to the base asset");
+            static_assert(std::is_same_v<AssetType, GenericAsset>,
+                "Downcasting should be applied only for pointer to the generic asset");
             return AssetPtr<AssetType_>(asset_);
         }
 

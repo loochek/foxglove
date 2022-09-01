@@ -23,6 +23,8 @@ namespace foxglove::renderer {
 
         void CommitToGPU();
 
+        void Draw();
+
     private:
         bool indexed_draw_;
         bool has_normals_;

@@ -2,7 +2,7 @@
 
 #include <asset/asset.hpp>
 #include <asset/asset_manager.hpp>
-#include <asset/handler_base.hpp>
+#include <asset/handlers/handler_base.hpp>
 
 namespace foxglove::renderer {
     class Texture;
@@ -11,21 +11,19 @@ namespace foxglove::renderer {
 namespace foxglove::asset {
     struct TextureAsset : AssetBase {
         std::unique_ptr<renderer::Texture> texture;
+
+        TextureAsset() = delete;
+        TextureAsset(std::string name) : AssetBase(std::move(name)) {}
     };
 
     class TextureAssetHandler : public AssetHandlerBase<TextureAsset> {
         friend const renderer::Texture* AssetPtr<renderer::Texture>::Access();
 
     public:
-        TextureAssetHandler() = default;
+        TextureAssetHandler(AssetManager& asset_mgr);
 
     private:
-        virtual void Load(const std::string& name) override;
-        virtual void Initialize(const std::string& name) override;
+        void Load(TextureAsset &asset) override;
+        void Initialize(TextureAsset &asset) override;
     };
-
-    template<>
-    inline const renderer::Texture* AssetPtr<renderer::Texture>::Access() {
-        return const_cast<const renderer::Texture*>(static_cast<TextureAsset*>(asset_)->texture.get());
-    }
 }

@@ -1,7 +1,7 @@
 #include "hardware_texture.hpp"
 
 namespace foxglove::renderer {
-    HardwareTexture::HardwareTexture(math::Vec2i size) : size_(size), handle_(0), curr_texture_unit_(-1) {
+    HardwareTexture::HardwareTexture(math::Vec2i size) : size_(size), handle_(0) {
         GL_ASSERT(glGenTextures(1, &handle_));        
         {
             Bind();

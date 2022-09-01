@@ -20,8 +20,10 @@ namespace foxglove::renderer {
             glDeleteBuffers(1, &handle_);
         }
 
-        static void SetData(const void* data, size_t size, size_t offset = 0) {
+        void SetData(const void* data, size_t size, size_t offset = 0) {
+            Bind();
             glBufferSubData(BufferType, offset, size, data);
+            Unbind();
         }
         
         void Bind() {

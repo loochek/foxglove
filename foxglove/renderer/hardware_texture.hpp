@@ -27,7 +27,6 @@ namespace foxglove::renderer {
         }
 
     private:
-
         math::Vec2i size_;
         GLuint handle_;
     };
