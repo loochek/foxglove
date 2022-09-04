@@ -1,0 +1,7 @@
+{
+    "samplers": {
+        "texture_diff0": "rat"
+    },
+    "shader": "lol",
+    "shininess": 80.0
+}

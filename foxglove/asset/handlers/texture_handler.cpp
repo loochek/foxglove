@@ -14,7 +14,7 @@ namespace foxglove::asset {
         std::string path = fmt::format("assets/textures/{}", asset.name);
 
         math::Vec2i size;
-        void* raw_texture = stbi_load(path.c_str(), &size.x, &size.y, NULL, 0);
+        void* raw_texture = stbi_load(path.c_str(), &size.x, &size.y, NULL, STBI_rgb);
         if (raw_texture == nullptr) {
             throw std::runtime_error("Unable to load texture");
         }

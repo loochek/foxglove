@@ -16,7 +16,7 @@ namespace foxglove::renderer {
         void SetVertexBuffer(HardwareVertexBuffer& vertex_buffer, const VertexAttributeMapping& mapping);
         void SetIndexBuffer(HardwareIndexBuffer& index_buffer);
 
-        void Bind() {
+        void Bind() const {
             GL_ASSERT(glBindVertexArray(handle_));
         }
 

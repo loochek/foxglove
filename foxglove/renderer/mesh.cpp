@@ -1,17 +1,18 @@
 #include "mesh.hpp"
 #include <cstring>
+#include <type_traits>
 
 namespace foxglove::renderer {
     static_assert(sizeof(math::Vec3f) == 12);
     static_assert(sizeof(math::Vec2f) == 8);
-    static_assert(offsetof(math::Vec3f, x) == 0);
-    static_assert(offsetof(math::Vec2f, x) == 0);
+    static_assert(std::alignment_of_v<math::Vec2f> == 4);
+    static_assert(std::alignment_of_v<math::Vec3f> == 4);
 
     Mesh::Mesh(std::vector<math::Vec3f> vertices) : positions_(std::move(vertices)),
                                                     indexed_draw_(false), has_normals_(false), has_tex_coords_(false) {
     }
 
-    void Mesh::SetIndices(std::vector<unsigned int> indices) {
+    void Mesh::SetIndices(std::vector<unsigned short> indices) {
         indices_ = std::move(indices);
         indexed_draw_ = true;
     }
@@ -26,10 +27,6 @@ namespace foxglove::renderer {
         FXG_ASSERT(tex_coords.size() == positions_.size());
         tex_coords_ = std::move(tex_coords);
         has_tex_coords_ = true;
-    }
-
-    void Mesh::SetMaterial(const Material *material) {
-        material_ = material;
     }
 
 #define ATTR_COPY(array, type) \
@@ -80,24 +77,10 @@ namespace foxglove::renderer {
         vert_data_->SetVertexBuffer(*vertex_buffer_, mapping);
 
         if (indexed_draw_) {
-            int index_buffer_size = vertex_count * sizeof(unsigned int);
+            int index_buffer_size = vertex_count * sizeof(unsigned short);
             index_buffer_ = std::make_unique<HardwareIndexBuffer>(index_buffer_size);
             index_buffer_->SetData(indices_.data(), index_buffer_size);
             vert_data_->SetIndexBuffer(*index_buffer_);
         }
-    }
-
-    void Mesh::Draw() {
-        material_->Bind();
-        vert_data_->Bind();
-
-        if (indexed_draw_) {
-            GL_ASSERT(glDrawElements(GL_TRIANGLES, indices_.size(), GL_UNSIGNED_INT, 0));
-        } else {
-            GL_ASSERT(glDrawArrays(GL_TRIANGLES, 0, positions_.size()));
-        }
-
-        vert_data_->Unbind();
-        material_->Unbind();
     }
 }

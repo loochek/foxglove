@@ -14,6 +14,7 @@ find_package(glfw3 REQUIRED)
 find_package(fmt REQUIRED)
 
 add_subdirectory(foxglove)
+add_subdirectory(model_importer)
 add_subdirectory(thirdparty/glad)
 add_subdirectory(thirdparty/stb)
 add_subdirectory(thirdparty/json)

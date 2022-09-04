@@ -48,11 +48,36 @@ namespace foxglove::renderer {
         GL_ASSERT(glDeleteProgram(handle_));
     }
 
-    void Shader::SetUniform(const char* name, const math::Vec3f& vector) const {
+#define SET_UNIFORM_FXG_VEC_TYPE(TYPE, COUNT, RAW_TYPE, GL_FUNC) \
+    void Shader::SetUniform(const char* name, const TYPE& param) const { \
+        BindScope([&]() { \
+            GLuint location = glGetUniformLocation(handle_, name); \
+            GL_ASSERT((void)true); \
+            GL_ASSERT(GL_FUNC(location, COUNT, static_cast<const RAW_TYPE*>(param.RawData()))); \
+        }); \
+    }
+
+    SET_UNIFORM_FXG_VEC_TYPE(math::Vec2i, 2, GLint, glUniform2iv)
+    SET_UNIFORM_FXG_VEC_TYPE(math::Vec3i, 3, GLint, glUniform3iv)
+    SET_UNIFORM_FXG_VEC_TYPE(math::Vec4i, 4, GLint, glUniform4iv)
+
+    SET_UNIFORM_FXG_VEC_TYPE(math::Vec2f, 2, GLfloat, glUniform2fv)
+    SET_UNIFORM_FXG_VEC_TYPE(math::Vec3f, 3, GLfloat, glUniform3fv)
+    SET_UNIFORM_FXG_VEC_TYPE(math::Vec4f, 4, GLfloat, glUniform4fv)
+
+    void Shader::SetUniform(const char *name, int value) const {
         BindScope([&]() {
             GLuint location = glGetUniformLocation(handle_, name);
             GL_ASSERT((void)true);
-            GL_ASSERT(glUniform3fv(location, 3, static_cast<const GLfloat*>(vector.RawData())));
+            GL_ASSERT(glUniform1i(location, value));
+        });
+    }
+
+    void Shader::SetUniform(const char *name, float value) const {
+        BindScope([&]() {
+            GLuint location = glGetUniformLocation(handle_, name);
+            GL_ASSERT((void)true);
+            GL_ASSERT(glUniform1f(location, value));
         });
     }
 
@@ -64,12 +89,28 @@ namespace foxglove::renderer {
         });
     }
 
-    void Shader::SetUniform(const char *name, int value) const {
-        BindScope([&]() {
-            GLuint location = glGetUniformLocation(handle_, name);
-            GL_ASSERT((void)true);
-            GL_ASSERT(glUniform1i(location, value));
-        });
+#define PARAM_CASE(ENUM_TYPE) \
+    case ShaderParamType::ENUM_TYPE: \
+        SetUniform(name.c_str(), param.param_ ## ENUM_TYPE); \
+        break;
+
+    void Shader::ApplyParamList(const ShaderParamList &list) const {
+        for (auto& [name, param] : list.GetParams()) {
+            switch (param.type) {
+                PARAM_CASE(Float)
+                PARAM_CASE(Int)
+                PARAM_CASE(Vec2i)
+                PARAM_CASE(Vec3i)
+                PARAM_CASE(Vec4i)
+                PARAM_CASE(Vec2f)
+                PARAM_CASE(Vec3f)
+                PARAM_CASE(Vec4f)
+                PARAM_CASE(Mat4f)
+
+                default:
+                    FXG_ASSERT(0 && "Unknown shader param type");
+            }
+        }
     }
 
     GLuint Shader::CompileShaderPart(const char* src, GLuint type) {

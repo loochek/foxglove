@@ -15,15 +15,19 @@ namespace foxglove::renderer {
         Mesh() = delete;
         explicit Mesh(std::vector<math::Vec3f> vertices);
 
-        void SetIndices(std::vector<unsigned int> indices);
+        void SetIndices(std::vector<unsigned short> indices);
         void SetNormals(std::vector<math::Vec3f> normals);
         void SetTexCoords(std::vector<math::Vec2f> tex_coords);
 
-        void SetMaterial(const Material* material);
-
         void CommitToGPU();
 
-        void Draw();
+        void Bind() const {
+            vert_data_->Bind();
+        }
+
+        static void Unbind() {
+            HardwareVertexData::Unbind();
+        }
 
     private:
         bool indexed_draw_;
@@ -34,9 +38,7 @@ namespace foxglove::renderer {
         std::vector<math::Vec3f> normals_;
         std::vector<math::Vec2f> tex_coords_;
 
-        std::vector<unsigned int> indices_;
-
-        const Material* material_;
+        std::vector<unsigned short> indices_;
 
         std::unique_ptr<HardwareVertexBuffer> vertex_buffer_;
         std::unique_ptr<HardwareIndexBuffer> index_buffer_;

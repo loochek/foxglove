@@ -26,7 +26,7 @@ namespace foxglove::renderer {
             Unbind();
         }
         
-        void Bind() {
+        void Bind() const {
             glBindBuffer(BufferType, handle_);
         }
         

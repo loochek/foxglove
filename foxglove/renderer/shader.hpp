@@ -7,19 +7,28 @@
 #include <math/vector.hpp>
 #include <math/matrix.hpp>
 #include <renderer/gl_assert.hpp>
+#include <renderer/shader_params.hpp>
 
 namespace foxglove::renderer {
     /// GPU program abstraction
     class Shader : private foxglove::utils::NonCopyable {
-        friend class Renderer;
-
     public:
         Shader(const char* vert_src, const char* frag_src);
         ~Shader();
 
-        void SetUniform(const char* name, const math::Vec3f& vector) const;
-        void SetUniform(const char* name, const math::Mat4f& matrix) const;
         void SetUniform(const char* name, int value) const;
+        void SetUniform(const char* name, const math::Vec2i& vector) const;
+        void SetUniform(const char* name, const math::Vec3i& vector) const;
+        void SetUniform(const char* name, const math::Vec4i& vector) const;
+
+        void SetUniform(const char* name, float value) const;
+        void SetUniform(const char* name, const math::Vec2f& vector) const;
+        void SetUniform(const char* name, const math::Vec3f& vector) const;
+        void SetUniform(const char* name, const math::Vec4f& vector) const;
+
+        void SetUniform(const char* name, const math::Mat4f& matrix) const;
+
+        void ApplyParamList(const ShaderParamList& list) const;
 
         void Bind() const {
             GL_ASSERT(glUseProgram(handle_));

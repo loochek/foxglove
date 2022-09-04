@@ -40,11 +40,21 @@ namespace foxglove::asset {
         }
 
         void Load(AssetPtr<GenericAsset> asset_ptr) override {
-            Load(PtrToInternal(asset_ptr));
+            AssetInternalType& asset = PtrToInternal(asset_ptr);
+            if (asset.state != AssetState::Void) {
+                return;
+            }
+
+            Load(asset);
         }
 
         void Initialize(AssetPtr<GenericAsset> asset_ptr) override {
-            Initialize(PtrToInternal(asset_ptr));
+            AssetInternalType& asset = PtrToInternal(asset_ptr);
+            if (asset.state == AssetState::ReadyToUse) {
+                return;
+            }
+
+            Initialize(asset);
         }
 
         void LoadAll() override {

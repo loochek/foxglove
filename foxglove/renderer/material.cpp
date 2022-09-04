@@ -5,22 +5,27 @@ namespace foxglove::renderer {
     Material::Material(const Shader *shader) : shader_(shader) {}
 
     void Material::AppendTexture(std::string name, const Texture* texture) {
-        samplers_.emplace_back(std::move(name), texture);
+        params_.SetParam(name, int(textures_.size()));
+        textures_.push_back(texture);
+    }
+
+    void Material::SetShaderParam(const std::string& name, ShaderParam param) {
+        params_.SetParam(name, param);
     }
 
     void Material::Bind() const {
-        for (int i = 0; i < samplers_.size(); i++) {
-            const TextureSampler& sampler = samplers_[i];
-            shader_->SetUniform(sampler.name.c_str(), i);
-            sampler.texture->GetHardwareTexture()->Bind(i);
+        for (int i = 0; i < textures_.size(); i++) {
+            textures_[i]->GetHardwareTexture()->Bind(i);
+            // Name-to-sampler mapping is specified in the param list
         }
 
+        shader_->ApplyParamList(params_);
         shader_->Bind();
     }
 
     void Material::Unbind() const {
         Shader::Unbind();
-        for (int i = 0; i < samplers_.size(); i++) {
+        for (int i = 0; i < textures_.size(); i++) {
             HardwareTexture::Unbind(i);
         }
     }

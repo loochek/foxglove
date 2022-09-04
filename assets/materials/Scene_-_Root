@@ -1,0 +1,7 @@
+{
+    "samplers": {
+        "texture_diff0": "backpack"
+    },
+    "shader": "lol",
+    "shininess": 225.0
+}

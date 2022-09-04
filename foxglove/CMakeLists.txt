@@ -10,4 +10,5 @@ aux_source_directory(asset/handlers FOXGLOVE_SOURCES)
 add_executable(foxglove ${FOXGLOVE_SOURCES} asset/asset_handler.hpp asset/asset_handler.hpp)
 target_link_libraries(foxglove ${OPENGL_LIBRARIES} glfw glad stb fmt::fmt json)
 
-target_include_directories(foxglove PRIVATE ./)
+target_include_directories(foxglove PUBLIC ./)
+target_include_directories(foxglove PRIVATE "$<TARGET_PROPERTY:model_importer,INTERFACE_INCLUDE_DIRECTORIES>")

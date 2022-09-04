@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cmath>
 #include <algorithm>
 #include <utils/assert.hpp>
 
@@ -230,7 +231,7 @@ namespace foxglove::math {
 
         T Length() const
         {
-            return sqrt(*this ^ *this);
+            return sqrt(*this * *this);
         }
 
         Vec3 Reflected(Vec3 normal) const

@@ -1,7 +1,4 @@
 {
-    "shader": "lol",
-
-    "samplers": {
-        "texture_diff": "wall"
-    }
+    "shader": "default",
+    "samplers": {}
 }

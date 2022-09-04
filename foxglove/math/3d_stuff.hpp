@@ -23,15 +23,27 @@ namespace foxglove::math {
         });
     }
 
-    Mat4f Rotate(const Vec3f& axis, float angle) {
+    Mat4f Rotate(const Vec3f& axis_unnorm, float angle) {
+        Vec3f axis = axis_unnorm.Normalized();
         float c = cosf(angle);
         float s = sinf(angle);
 
         return Mat4f({
             { c + axis.x * axis.x * (1 - c)         , axis.x * axis.y * (1 - c) - axis.z * s, axis.x * axis.z * (1 - c) + axis.y * s, 0 },
             { axis.y * axis.x * (1 - c) + axis.z * s, c + axis.y * axis.y * (1 - c),          axis.y * axis.z * (1 - c) - axis.x * s, 0 },
-            { axis.z * axis.x * (1 - c) - axis.y * s, axis.z * axis.y * (1 - c) - axis.x * s, c + axis.z * axis.z * (1 - c),          0 },
+            { axis.z * axis.x * (1 - c) - axis.y * s, axis.z * axis.y * (1 - c) + axis.x * s, c + axis.z * axis.z * (1 - c),          0 },
             { 0,                                      0,                                      0,                                      1 }
         });
+    }
+
+    Mat4f PerspectiveProj(float fov, float ratio, float near, float far) {
+        float half_fov_tan = tanf(fov / 2.0f);
+        float width_half = half_fov_tan * near;
+        float height_half = width_half / ratio;
+
+        return Mat4f({{ near / width_half, 0.0f, 0.0f, 0.0f },
+                      { 0.0f, near / height_half, 0.0f, 0.0f },
+                      { 0.0f, 0.0f, -(far + near) / (far - near), -2.0f * far * near / (far - near) },
+                      { 0.0f, 0.0f,  -1.0f, 0.0f } });
     }
 }
