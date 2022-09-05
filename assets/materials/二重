@@ -1,0 +1,7 @@
+{
+    "samplers": {
+        "texture_diff0": "面.png"
+    },
+    "shader": "lol",
+    "shininess": 100.0
+}

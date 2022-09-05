@@ -111,10 +111,18 @@ void TestApp::OnEvent(const core::MainLoopRenderEvent &) {
 
     renderer::ShaderParamList shader_params;
     shader_params.SetParam("proj", math::PerspectiveProj(0.785398f , 4.0f / 3.0f, 0.1f, 100.0f));
-//            shader_params.SetParam("view", math::Translate(math::Vec3f(0.0f, -6.0f, -35.0f)));
+
+    // Model 1: rat2
     shader_params.SetParam("view", math::Translate(math::Vec3f(0.0f, 0.0f, -10.0f)));
-//            shader_params.SetParam("model",  math::Rotate(math::Vec3f(0.0f, 1.0f, 0.0f), angle) * math::Scale(math::Vec3f(0.1f, 0.1f, 0.1f)));
-    shader_params.SetParam("model", math::Rotate(math::Vec3f(1.0f, 1.0f, 1.0f), angle));
+    shader_params.SetParam("model",  math::Rotate(math::Vec3f(1.0f, 1.0f, 1.0f), angle));
+
+    // Model 2: backpack
+//    shader_params.SetParam("view", math::Translate(math::Vec3f(0.0f, 0.0f, -10.0f)));
+//    shader_params.SetParam("model",  math::Rotate(math::Vec3f(1.0f, 1.0f, 1.0f), angle));
+
+    // Model 3: Diona
+//    shader_params.SetParam("view", math::Translate(math::Vec3f(0.0f, -3.0f, -10.0f)));
+//    shader_params.SetParam("model",  math::Rotate(math::Vec3f(0.0f, 1.0f, 0.0f), angle) * math::Rotate(math::Vec3f(1.0f, 0.0f, 0.0f), -1.57) * math::Scale(math::Vec3f(5.0f, 5.0f, 5.0f)));
 
     renderer::DrawList draw_list;
     model_->Draw(draw_list, shader_params);

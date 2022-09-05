@@ -22,7 +22,7 @@ namespace foxglove::model_import {
 
     void ImportModel(const std::string& file_path) {
         Assimp::Importer importer;
-        const aiScene *scene = importer.ReadFile(file_path, aiProcess_Triangulate);
+        const aiScene *scene = importer.ReadFile(file_path, aiProcess_Triangulate | aiProcess_FlipUVs);
         if (scene == nullptr || (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) || scene->mRootNode == nullptr) {
             throw std::runtime_error(fmt::format("Assimp error: {}", importer.GetErrorString()));
         }
@@ -127,7 +127,7 @@ namespace foxglove::model_import {
 
         if (ai_mesh->mTextureCoords[0]) {
             fmt::print("Mesh has tex coords\n");
-            FXG_ASSERT(ai_mesh->mNumVertices == ai_mesh->mNumUVComponents[0]);
+//            FXG_ASSERT(ai_mesh->mNumVertices == ai_mesh->mNumUVComponents[0]);
 
             std::vector<math::Vec2f> uvs;
             for (int i = 0; i < ai_mesh->mNumVertices; i++) {
