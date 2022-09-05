@@ -17,10 +17,6 @@ namespace foxglove {
         class Renderer;
     }
 
-    namespace ecs {
-        class RenderSystem;
-    }
-
     namespace asset {
         class AssetManager;
     }
@@ -37,8 +33,8 @@ namespace foxglove {
         void Run();
         void Shutdown();
 
-        virtual void OnEvent(const core::WindowCloseEvent&) override;
-        virtual void OnEvent(const core::ShutdownInitiatedEvent&) override;
+        void OnEvent(const core::WindowCloseEvent&) override;
+        void OnEvent(const core::ShutdownInitiatedEvent&) override;
 
     public:
         core::EventBus* events_;
@@ -47,8 +43,6 @@ namespace foxglove {
         asset::AssetManager* assets_;
 
         renderer::Renderer* renderer_;
-
-        ecs::RenderSystem* render_system_;
 
     private:
         bool running_;

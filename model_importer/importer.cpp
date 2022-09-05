@@ -127,6 +127,7 @@ namespace foxglove::model_import {
 
         if (ai_mesh->mTextureCoords[0]) {
             fmt::print("Mesh has tex coords\n");
+            FXG_ASSERT(ai_mesh->mNumVertices == ai_mesh->mNumUVComponents[0]);
 
             std::vector<math::Vec2f> uvs;
             for (int i = 0; i < ai_mesh->mNumVertices; i++) {

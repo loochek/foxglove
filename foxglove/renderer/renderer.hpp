@@ -12,6 +12,7 @@
 
 #include <renderer/gl_assert.hpp>
 #include <renderer/mesh.hpp>
+#include <renderer/model.hpp>
 #include <renderer/draw_list.hpp>
 
 namespace foxglove::renderer {

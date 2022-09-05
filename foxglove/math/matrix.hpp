@@ -10,7 +10,7 @@ namespace foxglove::math {
         Mat4() {
             for (int i = 0; i < 4; i++) {
                 for (int j = 0; j < 4; j++) {
-                    data[i][j] = (i == j) ? 1 : 0;
+                    data[i][j] = ((i == j)) ? 1 : 0;
                 }
             }
         }
@@ -105,7 +105,7 @@ namespace foxglove::math {
 
         Mat4 operator*(const Mat4& other)
         {
-            Mat4 result;
+            Mat4 result = ZeroMatrix();
             for (int i = 0; i < 4; i++) {
                 for (int j = 0; j < 4; j++) {
                     for (int k = 0; k < 4; k++) {
@@ -135,6 +135,15 @@ namespace foxglove::math {
 
         const void* RawData() const {
             return reinterpret_cast<const void*>(data);
+        }
+
+        static Mat4 ZeroMatrix() {
+            return Mat4({
+                     { 0, 0, 0, 0 },
+                     { 0, 0, 0, 0 },
+                     { 0, 0, 0, 0 },
+                     { 0, 0, 0, 0 }
+             });
         }
         
     public:

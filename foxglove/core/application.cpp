@@ -4,7 +4,7 @@
 
 namespace foxglove::core {
     Application::Application() {
-        SetupEngine();
+//        SetupEngine();
         engine_.Init();
     }
 
@@ -16,11 +16,5 @@ namespace foxglove::core {
         AppInit();
         engine_.Run();
         AppShutdown();
-    }
-}
-
-namespace foxglove {
-    core::Application* CreateApplication() {
-        return new core::Application();
     }
 }

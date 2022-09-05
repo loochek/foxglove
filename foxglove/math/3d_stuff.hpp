@@ -5,7 +5,7 @@
 #include <math/matrix.hpp>
 
 namespace foxglove::math {
-    Mat4f Translate(const Vec3f& offset) {
+    inline Mat4f Translate(const Vec3f& offset) {
         return Mat4f({
             { 1, 0, 0, offset.x },
             { 0, 1, 0, offset.y },
@@ -14,7 +14,7 @@ namespace foxglove::math {
         });
     }
 
-    Mat4f Scale(const Vec3f& scale) {
+    inline Mat4f Scale(const Vec3f& scale) {
         return Mat4f({
             { scale.x, 0,       0,       0 },
             { 0,       scale.y, 0,       0 },
@@ -23,7 +23,7 @@ namespace foxglove::math {
         });
     }
 
-    Mat4f Rotate(const Vec3f& axis_unnorm, float angle) {
+    inline Mat4f Rotate(const Vec3f& axis_unnorm, float angle) {
         Vec3f axis = axis_unnorm.Normalized();
         float c = cosf(angle);
         float s = sinf(angle);
@@ -36,7 +36,7 @@ namespace foxglove::math {
         });
     }
 
-    Mat4f PerspectiveProj(float fov, float ratio, float near, float far) {
+    inline Mat4f PerspectiveProj(float fov, float ratio, float near, float far) {
         float half_fov_tan = tanf(fov / 2.0f);
         float width_half = half_fov_tan * near;
         float height_half = width_half / ratio;

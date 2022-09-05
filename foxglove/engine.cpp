@@ -7,7 +7,10 @@
 #include <asset/handlers/material_handler.hpp>
 #include <asset/handlers/model_handler.hpp>
 #include <renderer/renderer.hpp>
-#include <ecs/render_system.hpp>
+
+namespace foxglove::renderer {
+    class Model;
+}
 
 namespace foxglove {
     Engine::Engine() : running_(true) {}
@@ -26,9 +29,6 @@ namespace foxglove {
 
         window_ = new core::Window(math::Vec2i(800, 600), "Foxglove Application");
         renderer_ = new renderer::Renderer();
-
-        // High-level systems
-        render_system_ = new ecs::RenderSystem();
     }
 
     void Engine::Run() {
@@ -42,8 +42,6 @@ namespace foxglove {
     }
 
     void Engine::Shutdown() {
-        delete render_system_;
-
         delete renderer_;
         delete window_;
         delete assets_;
