@@ -31,9 +31,17 @@ namespace foxglove::ecs {
         void DestroyEntity(Entity entity);
 
         template<typename Component>
+        Component& GetComponent(Entity entity) {
+            FXG_ASSERT(HasComponent<Component>(entity));
+
+            ComponentID comp_id = comp_ids_[typeid(Component)];
+            return static_cast<ComponentArray<Component>*>(comp_arrays_[comp_id].get())->Get(entity);
+        }
+
+        template<typename Component>
         bool HasComponent(Entity entity) {
             ComponentID comp_id = comp_ids_[typeid(Component)];
-            return ent_signatures_[entity][comp_id];
+            return ent_signatures_[entity].test(comp_id);
         }
 
         template<typename Component>
@@ -63,6 +71,22 @@ namespace foxglove::ecs {
             Component& comp = component_array->Remove(entity);
             Engine::Instance()->events_->Emit(ComponentRemovedEvent(entity));
             return comp;
+        }
+
+        template<typename... Components, typename Func>
+        void ForEach(Func func) {
+            std::bitset<MAX_COMPONENTS> req_signature = GenerateSignature<Components...>();
+            for (auto& [entity, signature] : ent_signatures_) {
+                if ((signature & req_signature) == req_signature) {
+                    func(entity);
+                }
+            }
+        }
+
+    private:
+        template<typename... Components>
+        auto GenerateSignature() {
+            return std::bitset<MAX_COMPONENTS>(((1 << comp_ids_[typeid(Components)]) | ...));
         }
 
     private:

@@ -11,8 +11,8 @@ namespace foxglove::core {
 
     // Window events
     struct WindowResizeEvent {
-        WindowResizeEvent(const math::Vec2i& new_size) : new_size_(new_size) {}
         math::Vec2i new_size_;
+        explicit WindowResizeEvent(const math::Vec2i& new_size) : new_size_(new_size) {}
     };
 
     struct WindowCloseEvent {};

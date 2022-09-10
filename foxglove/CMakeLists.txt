@@ -4,6 +4,8 @@ aux_source_directory(core FOXGLOVE_SOURCES)
 aux_source_directory(math FOXGLOVE_SOURCES)
 aux_source_directory(renderer FOXGLOVE_SOURCES)
 aux_source_directory(ecs FOXGLOVE_SOURCES)
+aux_source_directory(game FOXGLOVE_SOURCES)
+aux_source_directory(game/systems FOXGLOVE_SOURCES)
 aux_source_directory(asset FOXGLOVE_SOURCES)
 aux_source_directory(asset/handlers FOXGLOVE_SOURCES)
 

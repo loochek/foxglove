@@ -20,7 +20,7 @@ namespace foxglove::ecs {
         ComponentArray() = default;
         ~ComponentArray() = default;
         
-        Component& Get(Entity entity) const {
+        Component& Get(Entity entity) {
             int idx = GetIdx(entity);
             FXG_ASSERT(idx != -1);
 

@@ -35,7 +35,7 @@ namespace foxglove {
         while (running_) {
             events_->Emit(core::MainLoopNativePollEvent());
             // events_->Emit(core::MainLoopPreUpdateEvent());
-            // events_->Emit(core::MainLoopUpdateEvent());
+            events_->Emit(core::MainLoopUpdateEvent());
             // events_->Emit(core::MainLoopPostUpdateEvent());
             events_->Emit(core::MainLoopRenderEvent());
         }

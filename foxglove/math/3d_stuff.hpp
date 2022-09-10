@@ -36,6 +36,12 @@ namespace foxglove::math {
         });
     }
 
+    inline Mat4f Rotate(const Vec3f& euler_angles) {
+        return math::Rotate(math::Vec3f(0.0f, 0.0f, 1.0f), euler_angles.z) *
+               math::Rotate(math::Vec3f(0.0f, 1.0f, 0.0f), euler_angles.y) *
+               math::Rotate(math::Vec3f(1.0f, 0.0f, 0.0f), euler_angles.x);
+    }
+
     inline Mat4f PerspectiveProj(float fov, float ratio, float near, float far) {
         float half_fov_tan = tanf(fov / 2.0f);
         float width_half = half_fov_tan * near;
