@@ -18,9 +18,13 @@ namespace foxglove::core {
     struct WindowCloseEvent {};
 
     // Main loop phases
-    struct MainLoopNativePollEvent {};
-    struct MainLoopPreUpdateEvent {};
-    struct MainLoopUpdateEvent {};
-    struct MainLoopPostUpdateEvent {};
-    struct MainLoopRenderEvent {};
+    struct GameNativePollEvent {};
+    struct GamePreUpdateEvent {};
+    struct GameUpdateEvent {
+        float time_delta;
+
+        explicit GameUpdateEvent(float time_delta) : time_delta(time_delta) {}
+    };
+    struct GamePostUpdateEvent {};
+    struct GameRenderEvent {};
 };

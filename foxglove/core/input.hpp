@@ -12,6 +12,7 @@ namespace foxglove::core {
         KEY_DOWN = 264,
         KEY_UP = 265,
         KEY_SPACE = 32,
+        KEY_ESC = 256,
         KEY_A = 65,
         KEY_B = 66,
         KEY_C = 67,

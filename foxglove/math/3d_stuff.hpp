@@ -52,4 +52,30 @@ namespace foxglove::math {
                       { 0.0f, 0.0f, -(far + near) / (far - near), -2.0f * far * near / (far - near) },
                       { 0.0f, 0.0f,  -1.0f, 0.0f } });
     }
+
+    /**
+     *
+     * \param position Camera position
+     * \param direction Camera direction vector
+     * \param up Camera up vector (allowed to be not really camera up,
+     * used together with direction vector to define a rotation plane)
+     * \return View matrix
+     */
+    inline Mat4f LookTo(math::Vec3f position, math::Vec3f direction, math::Vec3f up) {
+        direction = direction.Normalized();
+        math::Vec3f right = (direction ^ up).Normalized();
+        up = right ^ direction;
+
+        return Mat4f( {
+            { right.x     , right.y     , right.z     , 0.0f },
+            { up.x        , up.y        , up.z        , 0.0f },
+            { -direction.x, -direction.y, -direction.z, 0.0f },
+            { 0.0f        , 0.0f        , 0.0f        , 1.0f } }) * Translate(-position);
+    }
+
+    inline Vec3f Direction(const Vec3f& euler_angles) {
+        return Vec3f(cosf(euler_angles.x) * cosf(euler_angles.y),
+                     sinf(euler_angles.x),
+                     cosf(euler_angles.x) * sinf(euler_angles.y));
+    }
 }

@@ -53,8 +53,10 @@ namespace foxglove::core {
         glfwSetCursorPosCallback(handle_, [](GLFWwindow* window, double xpos, double ypos) {
             Engine::Instance()->events_->Emit(MouseMoveEvent(math::Vec2f(xpos, ypos)));
         });
-        
-        Engine::Instance()->events_->Subscribe<core::MainLoopNativePollEvent>(this);
+
+        glfwSetInputMode(handle_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+        Engine::Instance()->events_->Subscribe<core::GameNativePollEvent>(this);
     }
 
     Window::~Window() {
@@ -71,11 +73,15 @@ namespace foxglove::core {
         return ret;
     }
 
+    float Window::GetTime() {
+        return glfwGetTime();
+    }
+
     void Window::SetTitle(const char* new_title) {
         glfwSetWindowTitle(handle_, new_title);
     }
 
-    void Window::OnEvent(const core::MainLoopNativePollEvent&) {
+    void Window::OnEvent(const core::GameNativePollEvent&) {
         glfwPollEvents();
     }
 };

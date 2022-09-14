@@ -10,7 +10,7 @@ class GLFWwindow;
 namespace foxglove::core {
     class Window :
         public utils::Singleton<Window>,
-        public core::IEventListener<core::MainLoopNativePollEvent> {
+        public core::IEventListener<core::GameNativePollEvent> {
     public:
         Window(const math::Vec2i& size, const char* title);
         ~Window();
@@ -18,13 +18,15 @@ namespace foxglove::core {
         void Resize(const math::Vec2i& new_size);
         math::Vec2i GetSize();
 
+        float GetTime();
+
         void SetTitle(const char* new_title);
 
         void* GetNativeHandle() {
             return handle_;
         }
 
-        virtual void OnEvent(const core::MainLoopNativePollEvent&) override;
+        virtual void OnEvent(const core::GameNativePollEvent&) override;
 
     private:
         GLFWwindow* handle_;

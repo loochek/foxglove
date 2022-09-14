@@ -19,6 +19,7 @@ namespace foxglove {
         // Low-level engine subsystems
         events_ = new core::EventBus();
         events_->Subscribe<core::WindowCloseEvent>(this);
+        events_->Subscribe<core::KeyDownEvent>(this);
         events_->Subscribe<core::ShutdownInitiatedEvent>(this);
 
         assets_ = new asset::AssetManager();
@@ -32,12 +33,17 @@ namespace foxglove {
     }
 
     void Engine::Run() {
+        float timestamp = window_->GetTime();
         while (running_) {
-            events_->Emit(core::MainLoopNativePollEvent());
+            float new_timestamp = window_->GetTime();
+            float time_delta = new_timestamp - timestamp;
+            timestamp = new_timestamp;
+
+            events_->Emit(core::GameNativePollEvent());
             // events_->Emit(core::MainLoopPreUpdateEvent());
-            events_->Emit(core::MainLoopUpdateEvent());
+            events_->Emit(core::GameUpdateEvent(time_delta));
             // events_->Emit(core::MainLoopPostUpdateEvent());
-            events_->Emit(core::MainLoopRenderEvent());
+            events_->Emit(core::GameRenderEvent());
         }
     }
 
@@ -54,5 +60,11 @@ namespace foxglove {
 
     void Engine::OnEvent(const core::ShutdownInitiatedEvent&) {
         running_ = false;
+    }
+
+    void Engine::OnEvent(const core::KeyDownEvent &event) {
+        if (event.key == core::KeyboardKey::KEY_ESC) {
+            events_->Emit(core::ShutdownInitiatedEvent());
+        }
     }
 }

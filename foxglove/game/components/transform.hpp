@@ -1,8 +1,15 @@
 #pragma once
 
 #include <math/vector.hpp>
+#include <ecs/ecs.hpp>
 
 namespace foxglove::game {
+    struct TransformChangedEvent {
+        ecs::Entity entity;
+
+        explicit TransformChangedEvent(ecs::Entity entity) : entity(entity) {}
+    };
+
     struct TransformComponent {
         math::Vec3f translation;
         math::Vec3f rotation;

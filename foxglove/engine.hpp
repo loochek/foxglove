@@ -6,6 +6,7 @@
 #include <utils/singleton.hpp>
 #include <core/event_bus.hpp>
 #include <core/events.hpp>
+#include <core/input.hpp>
 
 namespace foxglove {
     namespace core {
@@ -24,7 +25,7 @@ namespace foxglove {
     /// Global engine state. Responsible to engine subsystems initialization and shutdown
     class Engine :
         public utils::Singleton<Engine>,
-        public core::IEventsListener<core::WindowCloseEvent, core::ShutdownInitiatedEvent> {
+        public core::IEventsListener<core::WindowCloseEvent, core::KeyDownEvent, core::ShutdownInitiatedEvent> {
     public:
         Engine();
         ~Engine() = default;
@@ -35,6 +36,7 @@ namespace foxglove {
 
         void OnEvent(const core::WindowCloseEvent&) override;
         void OnEvent(const core::ShutdownInitiatedEvent&) override;
+        void OnEvent(const core::KeyDownEvent&) override;
 
     public:
         core::EventBus* events_;

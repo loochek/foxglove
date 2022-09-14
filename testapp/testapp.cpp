@@ -4,8 +4,10 @@
 #include <renderer/renderer.hpp>
 #include <math/3d_stuff.hpp>
 #include <game/systems/render_system.hpp>
-#include <game/components/transform.hpp>
+#include <game/systems/camera_control_system.hpp>
 #include <game/components/model_renderer.hpp>
+#include <game/components/camera.hpp>
+#include <fmt/core.h>
 
 void TestApp::AppInit() {
 //            std::vector<math::Vec3f> vertices = { math::Vec3f(-0.5f, -0.5f, 0.0f),
@@ -98,14 +100,16 @@ void TestApp::AppInit() {
 //            mesh_->CommitToGPU();
 
     Engine::Instance()->window_->SetTitle("rat spinning to freebird 10 hours");
-    Engine::Instance()->events_->Subscribe<core::MainLoopUpdateEvent>(this);
+    Engine::Instance()->events_->Subscribe<core::GameUpdateEvent>(this);
 
     // Initializing high-level game subsystems
 
     world_.RegisterComponent<game::TransformComponent>();
     world_.RegisterComponent<game::ModelRendererComponent>();
+    world_.RegisterComponent<game::CameraComponent>();
 
     render_system_ = std::make_unique<game::RenderSystem>(&world_);
+    camera_system_ = std::make_unique<game::CameraControlSystem>(&world_);
 
     // Loading assets
 
@@ -114,13 +118,28 @@ void TestApp::AppInit() {
 
     // Creating entity
     entity_ = world_.CreateEntity();
-    world_.AddComponent<game::TransformComponent>(entity_);
+    world_.AddComponent<game::TransformComponent>(entity_).scale = math::Vec3f(0.1f, 0.1f, 0.1f);
     world_.AddComponent<game::ModelRendererComponent>(entity_).model = model_.Get();
+
+    // Creating camera
+    camera_ = world_.CreateEntity();
+    auto& camera_transform = world_.AddComponent<game::TransformComponent>(camera_);
+    world_.AddComponent<game::CameraComponent>(camera_);
+
+    camera_transform.translation = math::Vec3f(-1.0f, 0.0f, 0.0f);
+
+    render_system_->AssignCamera(camera_);
+    camera_system_->AssignCamera(camera_);
 }
 
-void TestApp::OnEvent(const core::MainLoopUpdateEvent &) {
+void TestApp::OnEvent(const core::GameUpdateEvent& event) {
+//    fmt::print("FPS: {}\n", 1.0f / event.time_delta);
+
     static float angle = 0.0f;
-    angle += 0.02f;
+    angle += event.time_delta;
+
+    // auto& camera_transform = world_.GetComponent<game::TransformComponent>(camera_);
+    // fmt::print("{} {} {}\n", camera_transform.translation.x, camera_transform.translation.y, camera_transform.translation.z);
 
     // Model 1: rat2
     auto& transform = world_.GetComponent<game::TransformComponent>(entity_);
